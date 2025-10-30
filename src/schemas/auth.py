@@ -29,6 +29,7 @@ class UserResponse(BaseModel):
     role: str = Field(..., description="Rol del usuario")
     is_active: bool = Field(..., description="Estado activo del usuario")
     created_at: Optional[datetime] = Field(None, description="Fecha de creación")
+    temporary_password: Optional[str] = Field(None, description="Contraseña temporal generada (solo en creación)")
     
     class Config:
         from_attributes = True
@@ -76,20 +77,77 @@ class TokenData(BaseModel):
 
 class UserCreate(BaseModel):
     """Schema para crear usuario"""
-    name: str = Field(..., min_length=3, max_length=255, description="Nombre del usuario")
+    name: str = Field(..., min_length=3, max_length=50, description="Nombre del usuario")
     email: EmailStr = Field(..., description="Email del usuario")
-    password: str = Field(..., min_length=6, description="Contraseña del usuario")
-    role: str = Field(default="admin", description="Rol del usuario")
+    role: str = Field(..., description="Rol del usuario")
+    password: Optional[str] = Field(None, min_length=8, max_length=128, description="Contraseña manual (opcional, se genera automáticamente si no se proporciona)")
     
     class Config:
         json_schema_extra = {
             "example": {
                 "name": "Nuevo Usuario",
                 "email": "nuevo@digitaltwins.com",
-                "password": "password123",
-                "role": "admin"
+                "role": "admin",
+                "password": "MiContraseña123!"
             }
         }
+
+
+class UserUpdate(BaseModel):
+    """Schema para actualizar usuario"""
+    name: Optional[str] = Field(None, min_length=3, max_length=50, description="Nombre del usuario")
+    email: Optional[EmailStr] = Field(None, description="Email del usuario")
+    role: Optional[str] = Field(None, description="Rol del usuario")
+    is_active: Optional[bool] = Field(None, description="Estado activo del usuario")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "name": "Usuario Actualizado",
+                "email": "actualizado@digitaltwins.com",
+                "role": "cajero",
+                "is_active": True
+            }
+        }
+
+
+class UserListResponse(BaseModel):
+    """Schema para lista de usuarios"""
+    id: int = Field(..., description="ID del usuario")
+    name: str = Field(..., description="Nombre del usuario")
+    email: EmailStr = Field(..., description="Email del usuario")
+    role: str = Field(..., description="Rol del usuario")
+    is_active: bool = Field(..., description="Estado activo del usuario")
+    created_at: Optional[datetime] = Field(None, description="Fecha de creación")
+    
+    class Config:
+        from_attributes = True
+
+
+class PasswordResetResponse(BaseModel):
+    """Schema para respuesta de restablecimiento de contraseña"""
+    message: str = Field(..., description="Mensaje de confirmación")
+    temporary_password: str = Field(..., description="Contraseña temporal generada")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "message": "Nueva contraseña generada exitosamente",
+                "temporary_password": "TempPass123!"
+            }
+        }
+
+
+class RoleInfo(BaseModel):
+    """Schema para información de un rol"""
+    value: str = Field(..., description="Valor del rol")
+    label: str = Field(..., description="Etiqueta del rol")
+    description: str = Field(..., description="Descripción del rol")
+
+
+class RolesResponse(BaseModel):
+    """Schema para respuesta de roles disponibles"""
+    roles: list[RoleInfo] = Field(..., description="Lista de roles disponibles")
 
 
 class HealthResponse(BaseModel):

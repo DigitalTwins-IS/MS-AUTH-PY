@@ -7,6 +7,11 @@ from .auth import (
     UserLogin,
     UserResponse,
     UserCreate,
+    UserUpdate,
+    UserListResponse,
+    PasswordResetResponse,
+    RoleInfo,
+    RolesResponse,
     HealthResponse
 )
 
@@ -16,6 +21,11 @@ __all__ = [
     "UserLogin",
     "UserResponse",
     "UserCreate",
+    "UserUpdate",
+    "UserListResponse",
+    "PasswordResetResponse",
+    "RoleInfo",
+    "RolesResponse",
     "HealthResponse"
 ]
 

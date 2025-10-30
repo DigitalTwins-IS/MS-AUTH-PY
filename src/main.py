@@ -7,9 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
 from .config import settings
-from .routers import auth_router
+from .routers import auth_router, users_router
 
-# Crear aplicación FastAPI
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
@@ -20,12 +19,11 @@ app = FastAPI(
     
     * **Login**: Autenticación con email y contraseña
     * **JWT**: Generación de tokens de acceso
-    * **Me**: Obtener información del usuario autenticado
-    * **Health**: Verificación del estado del servicio
-    
-    ## Historias de Usuario Implementadas
-    
-    * **HU0**: Como administrador, quiero iniciar sesión con mis credenciales
+    * **Gestión de Usuarios**: CRUD completo de usuarios del sistema
+    * **Roles**: Administrador, Cajero, Mesero
+    * **Contraseñas**: Generación automática de contraseñas temporales
+    * **Auditoría**: Log de todas las acciones de gestión de usuarios
+
     """,
     docs_url="/docs",
     redoc_url="/redoc",
@@ -46,6 +44,12 @@ app.include_router(
     auth_router,
     prefix=settings.API_PREFIX,
     tags=["auth"]
+)
+
+app.include_router(
+    users_router,
+    prefix=settings.API_PREFIX,
+    tags=["users"]
 )
 
 
