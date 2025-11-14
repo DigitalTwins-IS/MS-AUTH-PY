@@ -33,6 +33,16 @@ class Settings(BaseSettings):
     SERVICE_HOST: str = "0.0.0.0"
     SERVICE_PORT: int = 8000
     
+    # Email Configuration (para restablecimiento de contraseña)
+    SMTP_ENABLED: bool = False
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: Optional[str] = None
+    SMTP_PASSWORD: Optional[str] = None
+    SMTP_FROM_EMAIL: str = "noreply@digitaltwins.com"
+    SMTP_FROM_NAME: str = "Sistema Digital Twins"
+    SMTP_USE_TLS: bool = True
+    
     class Config:
         env_file = ".env"
         case_sensitive = True

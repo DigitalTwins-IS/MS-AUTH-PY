@@ -21,6 +21,15 @@ class User(Base):
     password_hash = Column(String(255), nullable=False)
     role = Column(Enum(UserRole), default=UserRole.ADMIN, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
+    # Campos para seguridad adicional
+    phone_number = Column(String(20), nullable=True, index=True)  # Teléfono para SMS
+    security_question = Column(String(255), nullable=True)  # Pregunta de seguridad
+    security_answer_hash = Column(String(255), nullable=True)  # Respuesta hasheada
+    # Campos para restablecimiento de contraseña
+    reset_token = Column(String(255), nullable=True, index=True)
+    reset_code = Column(String(6), nullable=True, index=True)  # Código de 6 dígitos para SMS
+    reset_token_expires = Column(DateTime(timezone=True), nullable=True)
+    reset_code_expires = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
