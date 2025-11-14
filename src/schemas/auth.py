@@ -127,7 +127,7 @@ class UserListResponse(BaseModel):
 class PasswordResetResponse(BaseModel):
     """Schema para respuesta de restablecimiento de contraseña"""
     message: str = Field(..., description="Mensaje de confirmación")
-    temporary_password: str = Field(..., description="Contraseña temporal generada")
+    temporary_password: Optional[str] = Field(None, description="Contraseña temporal generada (opcional)")
     
     class Config:
         json_schema_extra = {
@@ -164,6 +164,54 @@ class HealthResponse(BaseModel):
                 "service": "MS-AUTH-PY",
                 "version": "1.0.0",
                 "database": "connected"
+            }
+        }
+
+
+class ForgotPasswordRequest(BaseModel):
+    """Schema para solicitar restablecimiento de contraseña (con verificación opcional)"""
+    email: EmailStr = Field(..., description="Email del usuario")
+    verification_method: Optional[str] = Field(None, description="Método de verificación: 'phone', 'security_question' o None (método simple)")
+    phone_number: Optional[str] = Field(None, description="Número de teléfono (requerido si verification_method='phone')")
+    security_answer: Optional[str] = Field(None, description="Respuesta a la pregunta de seguridad (requerido si verification_method='security_question')")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "email": "admin@digitaltwins.com"
+            }
+        }
+
+
+class ResetPasswordRequest(BaseModel):
+    """Schema para restablecer contraseña con token o código"""
+    email: EmailStr = Field(..., description="Email del usuario")
+    reset_code: Optional[str] = Field(None, description="Código de 6 dígitos (si se usó SMS)")
+    token: Optional[str] = Field(None, description="Token de restablecimiento (si no se usó SMS)")
+    new_password: str = Field(..., min_length=6, description="Nueva contraseña")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "email": "admin@digitaltwins.com",
+                "reset_code": "123456",
+                "new_password": "nuevaPassword123"
+            }
+        }
+
+
+class ForgotPasswordResponse(BaseModel):
+    """Schema para respuesta de solicitud de restablecimiento"""
+    message: str = Field(..., description="Mensaje de confirmación")
+    reset_code: Optional[str] = Field(None, description="Código de 6 dígitos enviado por SMS (aplicación local - se muestra en pantalla)")
+    token: Optional[str] = Field(None, description="Token de restablecimiento (fallback si no hay teléfono)")
+    security_question: Optional[str] = Field(None, description="Pregunta de seguridad del usuario (si aplica)")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "message": "Código de verificación enviado. Copie el código de la pantalla.",
+                "reset_code": "123456"
             }
         }
 
