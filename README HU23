@@ -1,0 +1,98 @@
+# 🔐 HU23 — Autenticación de Administradores
+
+> Módulo encargado de permitir el acceso seguro de los administradores al sistema Digital Twins mediante autenticación con JWT y registro de auditoría.
+
+---
+
+## 📌 Descripción de la Historia de Usuario
+**Como** administrador del sistema,  
+**Quiero** iniciar sesión con mis credenciales,  
+**Para** acceder de manera segura a todas las funcionalidades administrativas.
+
+---
+
+## 🎯 Objetivos
+- Permitir inicio de sesión mediante usuario y contraseña
+- Mantener una sesión segura mediante **token JWT**
+- Registrar auditoría de eventos relacionados con autenticación
+
+---
+
+## 🚀 Funcionalidades Implementadas
+
+| Código | Funcionalidad | Estado |
+|--------|---------------|-------|
+| HU23-F1 | Inicio de sesión de administradores mediante API | ✔️ |
+| HU23-F2 | Validación de credenciales en BD | ✔️ |
+| HU23-F3 | Generación de token JWT | ✔️ |
+| HU23-F4 | Registro de auditoría en login exitoso | ✔️ |
+| HU23-F5 | Registro de auditoría en login fallido | ✔️ |
+
+---
+
+## 🔒 Seguridad
+
+- Contraseñas encriptadas con BCrypt
+- Gestión de sesión basada en token (no cookies)
+- Acceso restringido por roles:
+  - `ROLE_ADMIN`
+
+---
+
+## 🧩 Endpoint Implementado
+
+### 🔹 POST `/auth/login`
+
+📥 Request:
+```json
+{
+  "username": "admin",
+  "password": "123456"
+}
+Response:
+
+{
+  "token": "eyJh...jwt",
+  "userId": 1,
+  "username": "admin",
+  "roles": ["ADMIN"]
+}
+
+🛡 Auditoría Integrada
+
+Se registra automáticamente:
+
+Login exitoso
+
+Login fallido
+
+Información de IP
+
+Fecha y hora
+
+📌 Flujo de Autenticación
+flowchart TD
+A[Login] --> B[Enviar credenciales]
+B --> C{¿Credenciales válidas?}
+C -- Sí --> D[Generar JWT] --> E[Dashboard]
+C -- No --> F[Error] --> G[Registrar auditoría]
+
+🧪 Casos de Prueba
+ID	Caso de Prueba	Resultado Esperado
+CP23-01	Credenciales correctas	Acceso + token
+CP23-02	Usuario inválido	Error + auditoría
+CP23-03	Contraseña incorrecta	Error + auditoría
+CP23-04	Usuario sin rol ADMIN	Acceso denegado
+CP23-05	Token expirado	Cierre de sesión
+🏁 Criterios de Aceptación
+
+✔ Inicio de sesión funcional desde el frontend
+✔ Token válido mientras exista sesión
+✔ Auditoría activa para todos los eventos de login
+✔ Acceso seguro por roles
+
+📌 Estatus: Completada
+
+👤 Responsable
+Nombre	Rol
+Maryerifer Adriana Castro Ramos	Desarrollo Front + Back y Auditoría
